@@ -77,6 +77,7 @@ static void Task_OakSpeech_HandleRivalNameInput(u8);
 static void Task_OakSpeech_DoNamingScreen(u8);
 static void Task_OakSpeech_ConfirmName(u8);
 static void Task_OakSpeech_HandleConfirmNameInput(u8);
+static void Task_OakSpeech_GoBackToPlayerGender(u8);
 static void Task_OakSpeech_FadeOutPlayerPic(u8);
 static void Task_OakSpeech_FadeOutRivalPic(u8);
 static void Task_OakSpeech_FadeInRivalPic(u8);
@@ -587,42 +588,17 @@ static const u8 *const sControlsGuide_Pages2And3_Strings[CONTROLS_GUIDE_STRINGS_
 
 static const u8 *const sMaleNameChoices[] =
 {
-#if defined(FIRERED)
     gNameChoice_Red,
-    gNameChoice_Fire,
-    gNameChoice_Ash,
-    gNameChoice_Kene,
-    gNameChoice_Geki,
-#elif defined(LEAFGREEN)
-    gNameChoice_Green,
-    gNameChoice_Leaf,
-    gNameChoice_Gary,
-    gNameChoice_Kaz,
-    gNameChoice_Toru,
-#endif
-    gNameChoice_Jak,
-    gNameChoice_Janne,
-    gNameChoice_Jonn,
-    gNameChoice_Kamon,
-    gNameChoice_Karl,
-    gNameChoice_Taylor,
-    gNameChoice_Oscar,
-    gNameChoice_Hiro,
-    gNameChoice_Max,
-    gNameChoice_Jon,
-    gNameChoice_Ralph,
-    gNameChoice_Kay,
-    gNameChoice_Tosh,
-    gNameChoice_Roak
+    gNameChoice_Ash
 };
 
 static const u8 *const sFemaleNameChoices[] =
 {
 #if defined(FIRERED)
     gNameChoice_Red,
-    gNameChoice_Fire,
-#elif defined(LEAFGREEN)
     gNameChoice_Green,
+#elif defined(LEAFGREEN)
+    gNameChoice_Blue,
     gNameChoice_Leaf,
 #endif
     gNameChoice_Omi,
@@ -647,15 +623,11 @@ static const u8 *const sFemaleNameChoices[] =
 static const u8 *const sRivalNameChoices[] =
 {
 #if defined(FIRERED)
-    gNameChoice_Green,
-    gNameChoice_Gary,
-    gNameChoice_Kaz,
-    gNameChoice_Toru
+    gNameChoice_Blue,
+    gNameChoice_Gary
 #elif defined(LEAFGREEN)
-    gNameChoice_Red,
-    gNameChoice_Ash,
-    gNameChoice_Kene,
-    gNameChoice_Geki
+    gNameChoice_Blue,
+    gNameChoice_Gary
 #endif
 };
 
@@ -1423,8 +1395,6 @@ static void Task_OakSpeech_HandleRivalNameInput(u8 taskId)
         break;
     case 1: // Default name options
     case 2: //
-    case 3: //
-    case 4: //
         PlaySE(SE_SELECT);
         ClearStdWindowAndFrameToTransparent(tMenuWindowId, TRUE);
         RemoveWindow(tMenuWindowId);
@@ -1433,6 +1403,7 @@ static void Task_OakSpeech_HandleRivalNameInput(u8 taskId)
         gTasks[taskId].func = Task_OakSpeech_ConfirmName;
         break;
     case MENU_B_PRESSED:
+        gTasks[taskId].func = Task_OakSpeech_GoBackToPlayerGender;
         break;
     }
 }
@@ -1512,10 +1483,22 @@ static void Task_OakSpeech_HandleConfirmNameInput(u8 taskId)
     case MENU_B_PRESSED:
         PlaySE(SE_SELECT);
         if (sOakSpeechResources->hasPlayerBeenNamed == FALSE)
-            gTasks[taskId].func = Task_OakSpeech_FadeOutForPlayerNamingScreen;
+            gTasks[taskId].func = Task_OakSpeech_FadeOutOak;
         else
-            gTasks[taskId].func = Task_OakSpeech_RepeatNameQuestion;
+            gTasks[taskId].func = Task_OakSpeech_GoBackToPlayerGender;
         break;
+    }
+}
+
+
+static void Task_OakSpeech_GoBackToPlayerGender(u8 taskId)
+{
+    if (!IsTextPrinterActive(WIN_INTRO_TEXTBOX))
+    {
+        BeginNormalPaletteFade(PALETTES_ALL, 0, 0, 16, RGB_BLACK);
+        ClearDialogWindowAndFrame(WIN_INTRO_TEXTBOX, TRUE);
+        CreateFadeInTask(taskId, 2);
+        gTasks[taskId].func = Task_OakSpeech_AskPlayerGender;
     }
 }
 

@@ -472,8 +472,9 @@ extern struct BattleStruct *gBattleStruct;
         typeArg = gBattleMoves[move].type;                            \
 }
 
-#define IS_TYPE_PHYSICAL(moveType)(moveType < TYPE_MYSTERY)
-#define IS_TYPE_SPECIAL(moveType)(moveType > TYPE_MYSTERY)
+#define IS_MOVE_PHYSICAL(move)(gBattleMoves[move].category == MOVE_CATEGORY_PHYSICAL)
+#define IS_MOVE_SPECIAL(move)(gBattleMoves[move].category == MOVE_CATEGORY_SPECIAL)
+#define IS_MOVE_STATUS(move)(gBattleMoves[move].category == MOVE_CATEGORY_STATUS)
 
 #define TARGET_TURN_DAMAGED ((gSpecialStatuses[gBattlerTarget].physicalDmg != 0 || gSpecialStatuses[gBattlerTarget].specialDmg != 0))
 
@@ -677,8 +678,9 @@ extern u8 *gBattleAnimBgTileBuffer;
 extern u8 *gBattleAnimBgTilemapBuffer;
 extern void (*gBattleMainFunc)(void);
 extern u8 gMoveSelectionCursor[MAX_BATTLERS_COUNT];
-extern u32 gUnusedFirstBattleVar1;
-extern u8 gUnusedFirstBattleVar2;
+extern bool8 gPlayerDoesNotWantToEvolveLeft;
+extern bool8 gPlayerDoesNotWantToEvolveRight;
+extern u8 gBattleTerrainBackup;
 extern u8 gBattlerAttacker;
 extern u8 gEffectBattler;
 extern u8 gMultiHitCounter;

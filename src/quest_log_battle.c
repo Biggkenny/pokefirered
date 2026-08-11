@@ -6,6 +6,7 @@
 #include "overworld.h"
 #include "quest_log.h"
 #include "constants/trainers.h"
+#include "event_data.h"
 
 static void GetLinkMultiBattlePlayerIndexes(s32 *, s32 *);
 
@@ -22,7 +23,26 @@ void TrySetQuestLogBattleEvent(void)
 
         if (gBattleTypeFlags & BATTLE_TYPE_TRAINER)
         {
-            switch (gTrainers[gTrainerBattleOpponent_A].trainerClass)
+            u8 trainerClass = gTrainers[gTrainerBattleOpponent_A].trainerClass;
+            if (gTrainerBattleOpponent_A == TRAINER_RIVAL_VARIABLE)
+            {
+                u8 stage = VarGet(VAR_RIVAL_BATTLE_ID);
+                switch (stage)
+                {
+                default:
+                case 0:
+                    trainerClass = TRAINER_CLASS_RIVAL_EARLY;
+                    break;
+                case 3:
+                    trainerClass = TRAINER_CLASS_RIVAL_LATE;
+                    break;
+                case 7:
+                case 8:
+                    trainerClass = TRAINER_CLASS_CHAMPION;
+                    break;
+                }
+            }
+            switch (trainerClass)
             {
             case TRAINER_CLASS_LEADER:
                 eventId = QL_EVENT_DEFEATED_GYM_LEADER;

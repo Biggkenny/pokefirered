@@ -20,6 +20,7 @@
 #include "constants/moves.h"
 #include "constants/songs.h"
 #include "constants/sound.h"
+#include "event_data.h"
 
 static void OpponentHandleGetMonData(void);
 static void OpponentHandleGetRawMonData(void);
@@ -1130,8 +1131,30 @@ static void OpponentHandleDrawTrainerPic(void)
         trainerPicId = GetTrainerTowerTrainerFrontSpriteId();
     else if (gBattleTypeFlags & BATTLE_TYPE_EREADER_TRAINER)
         trainerPicId = GetEreaderTrainerFrontSpriteId();
+    else if (gTrainerBattleOpponent_A == TRAINER_RIVAL_VARIABLE)
+    {
+        u8 stage = VarGet(VAR_RIVAL_BATTLE_ID);
+        
+        switch (stage)
+        {
+        default:
+        case 0:
+            trainerPicId = TRAINER_PIC_RIVAL_EARLY;
+            break;
+        case 3:
+            trainerPicId = TRAINER_PIC_RIVAL_LATE;
+            break;
+        case 7:
+        case 8:
+            trainerPicId = TRAINER_PIC_CHAMPION_RIVAL;
+            break;
+        }
+    }
     else
+    {
         trainerPicId = gTrainers[gTrainerBattleOpponent_A].trainerPic;
+    }
+
     DecompressTrainerFrontPic(trainerPicId, gActiveBattler);
     SetMultiuseSpriteTemplateToTrainerBack(trainerPicId, GetBattlerPosition(gActiveBattler));
     gBattlerSpriteIds[gActiveBattler] = CreateSprite(&gMultiuseSpriteTemplate,

@@ -28,9 +28,9 @@ PokemonTower_2F_EventScript_Rival::
 	waitmovement 0
 	msgbox PokemonTower_2F_Text_RivalIntro
 	setvar VAR_LAST_TALKED, LOCALID_POKEMON_TOWER_RIVAL
-	call_if_eq VAR_STARTER_MON, 2, PokemonTower_2F_EventScript_RivalSquirtle
-	call_if_eq VAR_STARTER_MON, 1, PokemonTower_2F_EventScript_RivalBulbasaur
-	call_if_eq VAR_STARTER_MON, 0, PokemonTower_2F_EventScript_RivalCharmander
+	setvar VAR_RIVAL_BATTLE_ID, 4
+    callnative BuildRivalDynamicParty
+    trainerbattle_no_intro TRAINER_RIVAL_VARIABLE, PokemonTower_2F_Text_RivalDefeat
 	msgbox PokemonTower_2F_Text_RivalPostBattle
 	closemessage
 	playbgm MUS_RIVAL_EXIT, 0
@@ -54,18 +54,6 @@ PokemonTower_2F_EventScript_RivalFacePlayerDown::
 	applymovement LOCALID_POKEMON_TOWER_RIVAL, Common_Movement_WalkInPlaceFasterDown
 	applymovement LOCALID_PLAYER, Common_Movement_WalkInPlaceFasterUp
 	waitmovement 0
-	return
-
-PokemonTower_2F_EventScript_RivalSquirtle::
-	trainerbattle_no_intro TRAINER_RIVAL_POKEMON_TOWER_SQUIRTLE, PokemonTower_2F_Text_RivalDefeat
-	return
-
-PokemonTower_2F_EventScript_RivalBulbasaur::
-	trainerbattle_no_intro TRAINER_RIVAL_POKEMON_TOWER_BULBASAUR, PokemonTower_2F_Text_RivalDefeat
-	return
-
-PokemonTower_2F_EventScript_RivalCharmander::
-	trainerbattle_no_intro TRAINER_RIVAL_POKEMON_TOWER_CHARMANDER, PokemonTower_2F_Text_RivalDefeat
 	return
 
 PokemonTower_2F_EventScript_RivalExitRight::

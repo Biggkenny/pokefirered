@@ -9,6 +9,7 @@
 #include "constants/battle_ai.h"
 #include "constants/battle_move_effects.h"
 #include "constants/moves.h"
+#include "event_data.h"
 
 #define AI_ACTION_DONE          0x0001
 #define AI_ACTION_FLEE          0x0002
@@ -21,6 +22,17 @@
 
 #define AI_THINKING_STRUCT (gBattleResources->ai)
 #define BATTLE_HISTORY (gBattleResources->battleHistory)
+
+#define MAX_TRAINER_ITEMS 4
+#include "constants/items.h"
+
+static const u16 sRivalStageItems[][MAX_TRAINER_ITEMS] = {
+    { ITEM_NONE, ITEM_NONE, ITEM_NONE, ITEM_NONE },                         // stage 0
+    { ITEM_POTION, ITEM_NONE, ITEM_NONE, ITEM_NONE },                       // stage 1
+    { ITEM_SUPER_POTION, ITEM_SUPER_POTION, ITEM_NONE, ITEM_NONE },         // stage 2
+    { ITEM_HYPER_POTION, ITEM_FULL_HEAL, ITEM_NONE, ITEM_NONE },            // stage 3
+    { ITEM_FULL_RESTORE, ITEM_FULL_RESTORE, ITEM_FULL_RESTORE, ITEM_FULL_RESTORE }, // stage 7–8
+};
 
 // AI states
 enum
@@ -273,14 +285,33 @@ void BattleAI_HandleItemUseBeforeAISetup(void)
         && !(gBattleTypeFlags & (BATTLE_TYPE_TRAINER_TOWER | BATTLE_TYPE_EREADER_TRAINER | BATTLE_TYPE_BATTLE_TOWER | BATTLE_TYPE_SAFARI | BATTLE_TYPE_LINK))
         )
     {
+        const u16 *trainerItems;
+        u8 stage = 0;
+
+        trainerItems = gTrainers[gTrainerBattleOpponent_A].items;
+
+        if (gTrainerBattleOpponent_A == TRAINER_RIVAL_VARIABLE)
+        {
+            stage = VarGet(VAR_RIVAL_BATTLE_ID);
+            if (stage >= ARRAY_COUNT(sRivalStageItems))
+                stage = 0;
+            // Clamp to valid range so we don’t read past our table
+            if (stage >= ARRAY_COUNT(sRivalStageItems))
+                stage = ARRAY_COUNT(sRivalStageItems) - 1;
+
+            trainerItems = sRivalStageItems[stage];
+        }
+
         for (i = 0; i < MAX_TRAINER_ITEMS; i++)
         {
-            if (gTrainers[gTrainerBattleOpponent_A].items[i] != 0)
+            u16 itemId = trainerItems[i];
+            if (itemId != ITEM_NONE)
             {
-                BATTLE_HISTORY->trainerItems[BATTLE_HISTORY->itemsNo] = gTrainers[gTrainerBattleOpponent_A].items[i];
+                BATTLE_HISTORY->trainerItems[BATTLE_HISTORY->itemsNo] = itemId;
                 BATTLE_HISTORY->itemsNo++;
             }
         }
+
     }
 
     BattleAI_SetupAIData();

@@ -385,7 +385,7 @@ static const u8 sText_GhostAppearedCantId[] = _("The GHOST appeared!\pDarn!\nThe
 static const u8 sText_TheGhostAppeared[] = _("The GHOST appeared!\p");
 static const u8 sText_SilphScopeUnveil[] = _("SILPH SCOPE unveiled the GHOST's\nidentity!");
 static const u8 sText_TheGhostWas[] = _("The GHOST was MAROWAK!\p\n");
-static const u8 sText_Trainer1WantsToBattle[] = _("{B_TRAINER1_CLASS} {B_TRAINER1_NAME}\nwould like to battle!\p");
+static const u8 sText_Trainer1WantsToBattle[] = _("{B_TRAINER1_CLASS} {B_TRAINER1_NAME}\nwants to battle!\p");
 static const u8 sText_LinkTrainerWantsToBattle[] = _("{B_LINK_OPPONENT1_NAME}\nwants to battle!");
 static const u8 sText_TwoLinkTrainersWantToBattle[] = _("{B_LINK_OPPONENT1_NAME} and {B_LINK_OPPONENT2_NAME}\nwant to battle!");
 static const u8 sText_Trainer1SentOutPkmn[] = _("{B_TRAINER1_CLASS} {B_TRAINER1_NAME} sent\nout {B_OPPONENT_MON1_NAME}!{PAUSE 60}");
@@ -1163,7 +1163,7 @@ const u16 gWeatherStartsStringIds[] =
     [WEATHER_SUNNY_CLOUDS]       = STRINGID_ITISRAINING,
     [WEATHER_SUNNY]              = STRINGID_ITISRAINING,
     [WEATHER_RAIN]               = STRINGID_ITISRAINING,
-    [WEATHER_SNOW]               = STRINGID_ITISRAINING,
+    [WEATHER_SNOW]               = STRINGID_STARTEDHAIL,
     [WEATHER_RAIN_THUNDERSTORM]  = STRINGID_ITISRAINING,
     [WEATHER_FOG_HORIZONTAL]     = STRINGID_ITISRAINING,
     [WEATHER_VOLCANIC_ASH]       = STRINGID_ITISRAINING,
@@ -2050,8 +2050,29 @@ u32 BattleStringExpandPlaceholders(const u8 *src, u8 *dst)
                     toCpy = gTrainerClassNames[GetTrainerTowerOpponentClass()];
                 else if (gBattleTypeFlags & BATTLE_TYPE_EREADER_TRAINER)
                     toCpy = gTrainerClassNames[GetEreaderTrainerClassId()];
-                else
-                    toCpy = gTrainerClassNames[gTrainers[gTrainerBattleOpponent_A].trainerClass];
+                else 
+                {
+                    u8 trainerClass = gTrainers[gTrainerBattleOpponent_A].trainerClass;
+                    if (gTrainerBattleOpponent_A == TRAINER_RIVAL_VARIABLE)
+                    {
+                        u8 stage = VarGet(VAR_RIVAL_BATTLE_ID);
+                        switch (stage)
+                        {
+                        default:
+                        case 0:
+                            trainerClass = TRAINER_CLASS_RIVAL_EARLY;
+                            break;
+                        case 3:
+                            trainerClass = TRAINER_CLASS_RIVAL_LATE;
+                            break;
+                        case 7:
+                        case 8:
+                            trainerClass = TRAINER_CLASS_CHAMPION;
+                            break;
+                        }
+                    }
+                    toCpy = gTrainerClassNames[trainerClass];
+                }
                 break;
             case B_TXT_TRAINER1_NAME: // trainer1 name
                 if (gTrainerBattleOpponent_A == TRAINER_SECRET_BASE)
@@ -2081,9 +2102,7 @@ u32 BattleStringExpandPlaceholders(const u8 *src, u8 *dst)
                 }
                 else
                 {
-                    if (gTrainers[gTrainerBattleOpponent_A].trainerClass == TRAINER_CLASS_RIVAL_EARLY
-                     || gTrainers[gTrainerBattleOpponent_A].trainerClass == TRAINER_CLASS_RIVAL_LATE
-                     || gTrainers[gTrainerBattleOpponent_A].trainerClass == TRAINER_CLASS_CHAMPION)
+                    if (gTrainerBattleOpponent_A == TRAINER_RIVAL_VARIABLE)
                         toCpy = GetExpandedPlaceholder(PLACEHOLDER_ID_RIVAL);
                     else
                         toCpy = gTrainers[gTrainerBattleOpponent_A].trainerName;

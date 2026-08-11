@@ -1738,6 +1738,15 @@ u8 AbilityBattleEffects(u8 caseID, u8 battler, u8 ability, u8 special, u16 moveA
                         effect++;
                     }
                     break;
+                case WEATHER_SNOW:
+                    if (!(gBattleWeather & B_WEATHER_HAIL))
+                    {
+                        gBattleWeather = B_WEATHER_HAIL;
+                        gBattleScripting.animArg1 = B_ANIM_HAIL_CONTINUES;
+                        gBattleScripting.battler = battler;
+                        effect++;
+                    }
+                    break;
                 }
                 if (effect != 0)
                 {
@@ -3159,13 +3168,20 @@ u8 IsMonDisobedient(void)
             return 0;
 
         obedienceLevel = 10;
-
+        if (FlagGet(FLAG_BADGE01_GET))
+            obedienceLevel = 22;
         if (FlagGet(FLAG_BADGE02_GET))
-            obedienceLevel = 30;
+            obedienceLevel = 32;
+        if (FlagGet(FLAG_BADGE03_GET))
+            obedienceLevel = 42;
         if (FlagGet(FLAG_BADGE04_GET))
-            obedienceLevel = 50;
+            obedienceLevel = 52;
+        if (FlagGet(FLAG_BADGE05_GET))
+            obedienceLevel = 62;
         if (FlagGet(FLAG_BADGE06_GET))
-            obedienceLevel = 70;
+            obedienceLevel = 72;
+        if (FlagGet(FLAG_BADGE07_GET))
+            obedienceLevel = 82;
     }
 
     if (gBattleMons[gBattlerAttacker].level <= obedienceLevel)

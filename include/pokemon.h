@@ -235,6 +235,10 @@ struct SpeciesInfo
             u8 noFlip : 1;
 };
 
+#define MOVE_CATEGORY_PHYSICAL 0
+#define MOVE_CATEGORY_SPECIAL 1
+#define MOVE_CATEGORY_STATUS 2
+
 struct BattleMove
 {
     u8 effect;
@@ -246,6 +250,7 @@ struct BattleMove
     u8 target;
     s8 priority;
     u8 flags;
+    u8 category;
 };
 
 #define SPINDA_SPOT_WIDTH 16
@@ -363,6 +368,7 @@ void GetSpeciesName(u8 *name, u16 species);
 u8 CalculatePPWithBonus(u16 move, u8 ppBonuses, u8 moveIndex);
 void RemoveMonPPBonus(struct Pokemon *mon, u8 moveIndex);
 void RemoveBattleMonPPBonus(struct BattlePokemon *mon, u8 moveIndex);
+void CopyPlayerPartyMonToBattleData(u8 battlerId, u8 partyIndex, bool8 resetStats);
 bool8 ExecuteTableBasedItemEffect(struct Pokemon *mon, u16 item, u8 partyIndex, u8 moveIndex);
 bool8 PokemonUseItemEffects(struct Pokemon *mon, u16 item, u8 partyIndex, u8 moveIndex, bool8 usedByAI);
 bool8 PokemonItemUseNoEffect(struct Pokemon *mon, u16 item, u8 partyIndex, u8 moveIndex);

@@ -1070,7 +1070,7 @@ static void Cmd_accuracycheck(void)
             calc = (calc * 130) / 100; // 1.3 compound eyes boost
         if (WEATHER_HAS_EFFECT && gBattleMons[gBattlerTarget].ability == ABILITY_SAND_VEIL && gBattleWeather & B_WEATHER_SANDSTORM)
             calc = (calc * 80) / 100; // 1.2 sand veil loss
-        if (gBattleMons[gBattlerAttacker].ability == ABILITY_HUSTLE && IS_TYPE_PHYSICAL(type))
+        if (gBattleMons[gBattlerAttacker].ability == ABILITY_HUSTLE && IS_MOVE_PHYSICAL(move))
             calc = (calc * 80) / 100; // 1.2 hustle loss
 
         if (gBattleMons[gBattlerTarget].item == ITEM_ENIGMA_BERRY)
@@ -1822,7 +1822,7 @@ static void Cmd_datahpupdate(void)
                 if (!gSpecialStatuses[gActiveBattler].dmg && !(gHitMarker & HITMARKER_PASSIVE_DAMAGE))
                     gSpecialStatuses[gActiveBattler].dmg = gHpDealt;
 
-                if (IS_TYPE_PHYSICAL(moveType) && !(gHitMarker & HITMARKER_PASSIVE_DAMAGE) && gCurrentMove != MOVE_PAIN_SPLIT)
+                if (IS_MOVE_PHYSICAL(gCurrentMove) && !(gHitMarker & HITMARKER_PASSIVE_DAMAGE) && gCurrentMove != MOVE_PAIN_SPLIT)
                 {
                     gProtectStructs[gActiveBattler].physicalDmg = gHpDealt;
                     gSpecialStatuses[gActiveBattler].physicalDmg = gHpDealt;
@@ -1837,7 +1837,7 @@ static void Cmd_datahpupdate(void)
                         gSpecialStatuses[gActiveBattler].physicalBattlerId = gBattlerTarget;
                     }
                 }
-                else if (!IS_TYPE_PHYSICAL(moveType) && !(gHitMarker & HITMARKER_PASSIVE_DAMAGE))
+                else if (IS_MOVE_SPECIAL(gCurrentMove) && !(gHitMarker & HITMARKER_PASSIVE_DAMAGE))
                 {
                     gProtectStructs[gActiveBattler].specialDmg = gHpDealt;
                     gSpecialStatuses[gActiveBattler].specialDmg = gHpDealt;
@@ -2049,7 +2049,7 @@ static void Cmd_waitmessage(void)
         else
         {
             u16 toWait = T2_READ_16(gBattlescriptCurrInstr + 1);
-            if (++gPauseCounterBattle >= toWait)
+            if (++gPauseCounterBattle >= toWait || (JOY_NEW(A_BUTTON | B_BUTTON)))
             {
                 gPauseCounterBattle = 0;
                 gBattlescriptCurrInstr += 3;
@@ -3764,7 +3764,7 @@ static void Cmd_pause(void)
     if (gBattleControllerExecFlags == 0)
     {
         u16 value = T2_READ_16(gBattlescriptCurrInstr + 1);
-        if (++gPauseCounterBattle >= value)
+        if (++gPauseCounterBattle >= value || (JOY_NEW(A_BUTTON | B_BUTTON)))
         {
             gPauseCounterBattle = 0;
             gBattlescriptCurrInstr += 3;
@@ -5333,6 +5333,7 @@ static void Cmd_getmoneyreward(void)
         }
         else
         {
+            u8 trainerClass = gTrainers[gTrainerBattleOpponent_A].trainerClass;
             switch (gTrainers[gTrainerBattleOpponent_A].partyFlags)
             {
             case 0:
@@ -5364,9 +5365,28 @@ static void Cmd_getmoneyreward(void)
                 }
                 break;
             }
+
+            if (gTrainerBattleOpponent_A == TRAINER_RIVAL_VARIABLE)
+            {
+                u8 stage = VarGet(VAR_RIVAL_BATTLE_ID);
+                switch (stage)
+                {
+                default:
+                case 0:
+                    trainerClass = TRAINER_CLASS_RIVAL_EARLY;
+                    break;
+                case 3:
+                    trainerClass = TRAINER_CLASS_RIVAL_LATE;
+                    break;
+                case 7:
+                case 8:
+                    trainerClass = TRAINER_CLASS_CHAMPION;
+                    break;
+                }
+            }
             for (; gTrainerMoneyTable[i].classId != 0xFF; i++)
             {
-                if (gTrainerMoneyTable[i].classId == gTrainers[gTrainerBattleOpponent_A].trainerClass)
+                if (gTrainerMoneyTable[i].classId == trainerClass)
                     break;
             }
             party4 = gTrainers[gTrainerBattleOpponent_A].party.ItemCustomMoves; // Needed to Match. Has no effect.

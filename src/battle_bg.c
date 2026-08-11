@@ -13,6 +13,7 @@
 #include "constants/maps.h"
 #include "constants/songs.h"
 #include "constants/trainers.h"
+#include "event_data.h"
 
 #define TAG_VS_LETTERS 10000
 
@@ -1022,6 +1023,24 @@ void DrawBattleEntryBackground(void)
         if (gBattleTypeFlags & BATTLE_TYPE_TRAINER)
         {
             u8 trainerClass = gTrainers[gTrainerBattleOpponent_A].trainerClass;
+            if (gTrainerBattleOpponent_A == TRAINER_RIVAL_VARIABLE)
+            {
+                u8 stage = VarGet(VAR_RIVAL_BATTLE_ID);
+                switch (stage)
+                {
+                default:
+                case 0:
+                    trainerClass = TRAINER_CLASS_RIVAL_EARLY;
+                    break;
+                case 3:
+                    trainerClass = TRAINER_CLASS_RIVAL_LATE;
+                    break;
+                case 7:
+                case 8:
+                    trainerClass = TRAINER_CLASS_CHAMPION;
+                    break;
+                }
+            }
             if (trainerClass == TRAINER_CLASS_LEADER)
             {
                 LoadBattleTerrainEntryGfx(BATTLE_TERRAIN_BUILDING);
@@ -1062,6 +1081,8 @@ static u8 GetBattleTerrainOverride(void)
         if (gTrainers[gTrainerBattleOpponent_A].trainerClass == TRAINER_CLASS_LEADER)
             return BATTLE_TERRAIN_LEADER;
         else if (gTrainers[gTrainerBattleOpponent_A].trainerClass == TRAINER_CLASS_CHAMPION)
+            return BATTLE_TERRAIN_CHAMPION;
+        else if (gTrainerBattleOpponent_A == TRAINER_RIVAL_VARIABLE && VarGet(VAR_RIVAL_BATTLE_ID) >=7)
             return BATTLE_TERRAIN_CHAMPION;
     }
     battleScene = GetCurrentMapBattleScene();

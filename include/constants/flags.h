@@ -56,6 +56,9 @@
 #define FLAG_HIDE_BULBASAUR_BALL                           0x028
 #define FLAG_HIDE_SQUIRTLE_BALL                            0x029
 #define FLAG_HIDE_CHARMANDER_BALL                          0x02A
+#define FLAG_HIDE_PICHU_BALL                               0x0AF
+#define FLAG_HIDE_EEVEE_BALL2                              0x0B0
+#define FLAG_HIDE_EEVEE_BALL3                              0x0B1
 #define FLAG_HIDE_OAK_IN_HIS_LAB                           0x02B
 #define FLAG_HIDE_OAK_IN_PALLET_TOWN                       0x02C
 #define FLAG_HIDE_RIVAL_IN_LAB                             0x02D
@@ -190,9 +193,6 @@
 #define FLAG_HIDE_SAFFRON_CITY_POKECENTER_SABRINA_JOURNALS 0x0AE
 
 // Unused?
-#define FLAG_0x0AF               0x0AF
-#define FLAG_0x0B0               0x0B0
-#define FLAG_0x0B1               0x0B1
 #define FLAG_0x0B2               0x0B2
 #define FLAG_0x0B3               0x0B3
 #define FLAG_0x0B4               0x0B4
@@ -794,11 +794,11 @@
 #define FLAG_OAKS_RATING_IS_VIA_PC                       0x2FF
 
 // Unused?
-#define FLAG_0x300               0x300
-#define FLAG_0x301               0x301
-#define FLAG_0x302               0x302
-#define FLAG_0x303               0x303
-#define FLAG_0x304               0x304
+#define FLAG_CHOSE_KANTO_POKEMON 0x300
+#define FLAG_CHOSE_JOHTO_POKEMON 0x301
+#define FLAG_CHOSE_HOENN_POKEMON 0x302
+#define FLAG_CHOSE_SINNOH_POKEMON 0x303
+#define FLAG_CHOSE_ALOLA_POKEMON 0x304
 #define FLAG_0x305               0x305
 #define FLAG_0x306               0x306
 #define FLAG_0x307               0x307

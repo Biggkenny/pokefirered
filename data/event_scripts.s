@@ -882,7 +882,7 @@ Text_GiveNicknameToReceivedMon::
 	.string "{STR_VAR_2} you received?$"
 
 gText_PkmnFainted3::
-	.string "{STR_VAR_1} fainted…\p"
+	.string "{STR_VAR_1} survived the poisoning.\nThe poison faded away!\p"
 	.string "$"
 
 Text_WelcomeWantToHealPkmn::
@@ -1360,3 +1360,12 @@ Text_TestMsg::
 	.include "data/text/save.inc"
 	.include "data/text/new_game_intro.inc"
 	.include "data/text/pokedude.inc"
+
+	.include "data/maps/SaffronCity_BattleHall/scripts.inc"
+	.include "data/maps/SaffronCity_BattleHall/text.inc"
+
+	.include "data/maps/SaffronCity_BattleHall_TrophyRoom/scripts.inc"
+	.include "data/maps/SaffronCity_BattleHall_TrophyRoom/text.inc"
+
+	.include "data/maps/SaffronCity_BattleHall_Kitchen/scripts.inc"
+	.include "data/maps/SaffronCity_BattleHall_Kitchen/text.inc"

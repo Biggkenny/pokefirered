@@ -30,9 +30,9 @@ Route22_EventScript_EarlyRival::
 	call_if_eq VAR_TEMP_1, 2, Route22_EventScript_EarlyRivalApproachBottom
 	delay 6
 	msgbox Route22_Text_EarlyRivalIntro
-	call_if_eq VAR_STARTER_MON, 2, Route22_EventScript_EarlyRivalSquirtle
-	call_if_eq VAR_STARTER_MON, 1, Route22_EventScript_EarlyRivalBulbasaur
-	call_if_eq VAR_STARTER_MON, 0, Route22_EventScript_EarlyRivalCharmander
+	setvar VAR_RIVAL_BATTLE_ID, 1
+    callnative BuildRivalDynamicParty
+    trainerbattle_earlyrival TRAINER_RIVAL_VARIABLE, 0, Route22_Text_EarlyRivalDefeat, Text_RivalVictory
 	msgbox Route22_Text_EarlyRivalPostBattle
 	closemessage
 	delay 10
@@ -55,18 +55,6 @@ Route22_EventScript_EarlyRivalApproachBottom::
 	applymovement LOCALID_ROUTE22_RIVAL, Route22_Movement_RivalApproachBottom
 	applymovement LOCALID_PLAYER, Route22_Movement_PlayerFaceRival
 	waitmovement 0
-	return
-
-Route22_EventScript_EarlyRivalSquirtle::
-	trainerbattle_earlyrival TRAINER_RIVAL_ROUTE22_EARLY_SQUIRTLE, 0, Route22_Text_EarlyRivalDefeat, Text_RivalVictory
-	return
-
-Route22_EventScript_EarlyRivalBulbasaur::
-	trainerbattle_earlyrival TRAINER_RIVAL_ROUTE22_EARLY_BULBASAUR, 0, Route22_Text_EarlyRivalDefeat, Text_RivalVictory
-	return
-
-Route22_EventScript_EarlyRivalCharmander::
-	trainerbattle_earlyrival TRAINER_RIVAL_ROUTE22_EARLY_CHARMANDER, 0, Route22_Text_EarlyRivalDefeat, Text_RivalVictory
 	return
 
 Route22_EventScript_EarlyRivalExit::
@@ -181,9 +169,11 @@ Route22_EventScript_LateRival::
 	call_if_eq VAR_TEMP_1, 2, Route22_EventScript_LateRivalApproachBottom
 	msgbox Route22_Text_LateRivalIntro
 	setvar VAR_LAST_TALKED, LOCALID_ROUTE22_RIVAL
-	call_if_eq VAR_STARTER_MON, 2, Route22_EventScript_LateRivalSquirtle
-	call_if_eq VAR_STARTER_MON, 1, Route22_EventScript_LateRivalBulbasaur
-	call_if_eq VAR_STARTER_MON, 0, Route22_EventScript_LateRivalCharmander
+	
+	setvar VAR_RIVAL_BATTLE_ID, 6
+    callnative BuildRivalDynamicParty
+    trainerbattle_no_intro TRAINER_RIVAL_VARIABLE, Route22_Text_LateRivalDefeat
+	
 	msgbox Route22_Text_LateRivalPostBattle
 	closemessage
 	delay 10
@@ -205,18 +195,6 @@ Route22_EventScript_LateRivalApproachBottom::
 	applymovement LOCALID_ROUTE22_RIVAL, Route22_Movement_RivalApproachBottom
 	applymovement LOCALID_PLAYER, Route22_Movement_PlayerFaceRival
 	waitmovement 0
-	return
-
-Route22_EventScript_LateRivalSquirtle::
-	trainerbattle_no_intro TRAINER_RIVAL_ROUTE22_LATE_SQUIRTLE, Route22_Text_LateRivalDefeat
-	return
-
-Route22_EventScript_LateRivalBulbasaur::
-	trainerbattle_no_intro TRAINER_RIVAL_ROUTE22_LATE_BULBASAUR, Route22_Text_LateRivalDefeat
-	return
-
-Route22_EventScript_LateRivalCharmander::
-	trainerbattle_no_intro TRAINER_RIVAL_ROUTE22_LATE_CHARMANDER, Route22_Text_LateRivalDefeat
 	return
 
 Route22_Movement_LateRivalExit::
