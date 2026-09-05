@@ -65,8 +65,6 @@ static void HandleEndTurn_RanFromBattle(void);
 static void HandleEndTurn_MonFled(void);
 static void HandleEndTurn_FinishBattle(void);
 static void PlayerTryEvolution(void);
-static void BeginLeftEvoluionAfterFade(void);
-static void BeginRightEvoluionAfterFade(void);
 static void WaitForEvolutionThenTryAnother(void);
 static void CB2_SetUpReshowBattleScreenAfterEvolution(void);
 static void CB2_InitBattleInternal(void);
